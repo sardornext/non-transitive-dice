@@ -1,0 +1,23 @@
+{
+  "name": "non-transitive-dice",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.9",
+    "typescript": "^5.7.3"
+  }
+}
