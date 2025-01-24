@@ -18,12 +18,20 @@ function getSecureRandomInt(min, max) {
         }
     }
 }
-function generateHmac(secretKey, message) {
-    return (0, crypto_1.createHmac)('sha3-256', secretKey).update(message).digest('hex');
+function generateHmac(key, message) {
+    const hmac = (0, crypto_1.createHmac)('sha3-256', key);
+    hmac.update(message);
+    return hmac.digest('hex');
 }
 function generateSecureKey() {
     return (0, crypto_1.randomBytes)(config_1.SECRET_KEY_LENGTH).toString('hex');
 }
+// export function generateHmac(secretKey: string, message: string): string {
+//   return createHmac('sha3-256', secretKey).update(message).digest('hex');
+// }
+// export function generateSecureKey(): string {
+//   return randomBytes(SECRET_KEY_LENGTH).toString('hex');
+// }
 function mod(a, b) {
     return ((a % b) + b) % b;
 }

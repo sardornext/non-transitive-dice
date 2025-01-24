@@ -84,22 +84,20 @@ class Game {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log("Let's determine who makes the first move.");
-                // First move determination
-                const computerFirstMove = (0, utils_1.getSecureRandomInt)(0, 2);
+                const computerFirstMoveInput = (0, utils_1.getSecureRandomInt)(0, 2);
                 const firstMoveKey = (0, utils_1.generateSecureKey)();
-                const firstMoveHmac = (0, utils_1.generateHmac)(firstMoveKey, computerFirstMove.toString());
+                const firstMoveHmac = (0, utils_1.generateHmac)(firstMoveKey, computerFirstMoveInput.toString());
                 console.log(`HMAC: ${firstMoveHmac}`);
-                console.log('Enter your choice (0-1):');
-                const userFirstMove = parseInt(yield this.getUserInput('> '));
-                console.log(`Computer move: ${computerFirstMove} (key: ${firstMoveKey})`);
-                const isComputerFirst = (computerFirstMove + userFirstMove) % 2 === 1;
-                // Dice selection phase
+                console.log('Enter your choice for first move (0-1):');
+                const userFirstMoveInput = parseInt(yield this.getUserInput('> '));
+                console.log(`Computer input: ${computerFirstMoveInput} (key: ${firstMoveKey})`);
+                const combinedFirstMove = (computerFirstMoveInput + userFirstMoveInput) % 2;
+                const isComputerFirst = combinedFirstMove === 1;
                 let computerDice, playerDice;
                 if (isComputerFirst) {
                     const computerChoice = (0, utils_1.getSecureRandomInt)(0, this.dice.length);
                     computerDice = this.dice[computerChoice];
                     console.log(`Computer chose: [${computerDice.getFaces().join(',')}]`);
-                    // Player selects dice
                     console.log('\nAvailable dice:');
                     this.dice.forEach((dice, index) => {
                         if (index !== computerChoice) {
@@ -123,20 +121,32 @@ class Game {
                         availableDice[(0, utils_1.getSecureRandomInt)(0, availableDice.length)];
                     console.log(`Computer chose: [${computerDice.getFaces().join(',')}]`);
                 }
-                // Rolling phase
-                // Computer roll
-                const computerRollNum = (0, utils_1.getSecureRandomInt)(0, computerDice.getFaces().length);
+                const computerRollInput = (0, utils_1.getSecureRandomInt)(0, computerDice.getFaces().length);
                 const computerRollKey = (0, utils_1.generateSecureKey)();
-                const computerRollHmac = (0, utils_1.generateHmac)(computerRollKey, computerRollNum.toString());
-                console.log('\nComputer roll:');
+                const computerRollHmac = (0, utils_1.generateHmac)(computerRollKey, computerRollInput.toString());
+                console.log('\nComputer roll input:');
                 console.log(`HMAC: ${computerRollHmac}`);
-                // Player roll
-                console.log('Enter your number (0-' + (playerDice.getFaces().length - 1) + '):');
-                const playerRollNum = parseInt(yield this.getUserInput('> '));
-                // Reveal results
-                console.log(`Computer number: ${computerRollNum} (key: ${computerRollKey})`);
-                const computerValue = computerDice.roll(computerRollNum);
-                const playerValue = playerDice.roll(playerRollNum);
+                console.log('Enter your number for computer roll (0-' +
+                    (computerDice.getFaces().length - 1) +
+                    '):');
+                const userInputForComputerRoll = parseInt(yield this.getUserInput('> '));
+                const computerInputForPlayerRoll = (0, utils_1.getSecureRandomInt)(0, playerDice.getFaces().length);
+                const playerRollKey = (0, utils_1.generateSecureKey)();
+                const playerRollHmac = (0, utils_1.generateHmac)(playerRollKey, computerInputForPlayerRoll.toString());
+                console.log('\nPlayer roll:');
+                console.log(`HMAC: ${playerRollHmac}`);
+                console.log('Enter your number for your roll (0-' +
+                    (playerDice.getFaces().length - 1) +
+                    '):');
+                const userRollInput = parseInt(yield this.getUserInput('> '));
+                console.log(`Computer roll input: ${computerRollInput} (key: ${computerRollKey})`);
+                console.log(`Computer input for player roll: ${computerInputForPlayerRoll} (key: ${playerRollKey})`);
+                const finalComputerRoll = (computerRollInput + userInputForComputerRoll) %
+                    computerDice.getFaces().length;
+                const finalPlayerRoll = (computerInputForPlayerRoll + userRollInput) %
+                    playerDice.getFaces().length;
+                const computerValue = computerDice.roll(finalComputerRoll);
+                const playerValue = playerDice.roll(finalPlayerRoll);
                 console.log(`\nComputer rolled: ${computerValue}`);
                 console.log(`You rolled: ${playerValue}`);
                 if (computerValue > playerValue) {
