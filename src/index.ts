@@ -10,4 +10,9 @@ if (diceConfigs.length < 3) {
 }
 
 const game = new Game(diceConfigs);
-game.displayProbabilityTable();
+
+if (process.argv.includes('?') || process.argv.includes('--help')) {
+  game.displayProbabilityTable();
+} else {
+  game.play().catch(console.error);
+}
